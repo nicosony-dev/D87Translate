@@ -7,11 +7,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --gold: #FFD700;
-      --gold-dim: rgba(255,215,0,0.12);
-      --bg: #080808;
-      --surface: #111;
-      --border: #242424;
+      --gold: #fcba03;
+      --purple: #542a7d;
+      --gold-dim: rgba(252,186,3,0.12);
+      --bg: #000000;
+      --surface: #0f0f0f;
+      --border: #1f1f1f;
       --muted: #555;
       --text: #e8e8e8;
     }
@@ -24,7 +25,7 @@
     }
     #setup-screen {
       width: min(520px, 90vw); padding: 48px 40px;
-      background: var(--surface); border: 1px solid var(--border);
+      background: var(--surface); border: 1px solid var(--purple);
       border-radius: 24px; animation: fadeUp 0.5s ease both;
     }
     .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
@@ -40,11 +41,11 @@
     #start-btn {
       width: 100%; padding: 18px;
       font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 3px;
-      background: var(--gold); color: #000; border: none; border-radius: 12px;
+      background: var(--purple); color: var(--gold); border: none; border-radius: 12px;
       cursor: pointer; transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
-      box-shadow: 0 8px 30px rgba(255,215,0,0.25);
+      box-shadow: 0 8px 30px rgba(84,42,125,0.4);
     }
-    #start-btn:hover { background: #fff; transform: translateY(-2px); }
+    #start-btn:hover { background: var(--gold); color: #000; transform: translateY(-2px); }
     #start-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     #main-app {
       display: none; width: 100%; height: 100dvh;
@@ -53,13 +54,13 @@
     .top-bar {
       position: fixed; top: 0; left: 0; right: 0; padding: 16px 24px;
       display: flex; align-items: center; justify-content: space-between;
-      background: linear-gradient(to bottom, rgba(8,8,8,0.95), transparent);
+      background: linear-gradient(to bottom, rgba(0,0,0,0.95), transparent);
     }
-    .bar-logo { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 3px; color: var(--muted); }
+    .bar-logo { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 3px; color: var(--purple); }
     .controls { display: flex; align-items: center; gap: 12px; }
     select {
       padding: 8px 14px; background: var(--surface); color: var(--text);
-      border: 1px solid var(--border); border-radius: 8px;
+      border: 1px solid var(--purple); border-radius: 8px;
       font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; cursor: pointer;
     }
     #mic-badge {
@@ -84,7 +85,7 @@
       padding: 20px 40px 28px; text-align: center;
       font-size: clamp(14px, 2vw, 18px); color: var(--muted);
       font-style: italic; font-weight: 300;
-      background: linear-gradient(to top, rgba(8,8,8,0.95), transparent);
+      background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
     }
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(20px); }
@@ -164,7 +165,7 @@
         const lang = document.getElementById('langChoice').value;
         const res = await fetch(GAS_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify({ audio: base64Audio, targetLang: lang })
         });
         const result = await res.json();
