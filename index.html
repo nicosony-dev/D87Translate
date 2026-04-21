@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>District 87 Live Translate</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #FFD700;
+      --gold-dim: rgba(255,215,0,0.12);
+      --bg: #080808;
+      --surface: #111;
+      --border: #242424;
+      --muted: #555;
+      --text: #e8e8e8;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      height: 100dvh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; overflow: hidden;
+    }
+    #setup-screen {
+      width: min(520px, 90vw); padding: 48px 40px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 24px; animation: fadeUp 0.5s ease both;
+    }
+    .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+    .logo-dot {
+      width: 11px; height: 11px; border-radius: 50%;
+      background: var(--gold); box-shadow: 0 0 12px var(--gold);
+      animation: pulse 2s ease infinite;
+    }
+    .logo-text { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 3px; color: var(--gold); }
+    h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(38px, 6vw, 54px); letter-spacing: 2px; line-height: 1; margin-bottom: 12px; }
+    h1 span { color: var(--gold); }
+    .subtitle { color: var(--muted); font-size: 15px; font-weight: 300; line-height: 1.6; margin-bottom: 36px; }
+    #start-btn {
+      width: 100%; padding: 18px;
+      font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 3px;
+      background: var(--gold); color: #000; border: none; border-radius: 12px;
+      cursor: pointer; transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+      box-shadow: 0 8px 30px rgba(255,215,0,0.25);
+    }
+    #start-btn:hover { background: #fff; transform: translateY(-2px); }
+    #start-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    #main-app {
+      display: none; width: 100%; height: 100dvh;
+      flex-direction: column; align-items: center; justify-content: center; position: relative;
+    }
+    .top-bar {
+      position: fixed; top: 0; left: 0; right: 0; padding: 16px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: linear-gradient(to bottom, rgba(8,8,8,0.95), transparent);
+    }
+    .bar-logo { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 3px; color: var(--muted); }
+    .controls { display: flex; align-items: center; gap: 12px; }
+    select {
+      padding: 8px 14px; background: var(--surface); color: var(--text);
+      border: 1px solid var(--border); border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; cursor: pointer;
+    }
+    #mic-badge {
+      display: flex; align-items: center; gap: 7px; padding: 7px 14px;
+      border-radius: 50px; border: 1px solid var(--border);
+      font-size: 12px; font-weight: 500; letter-spacing: 1px; color: var(--muted); transition: all 0.3s;
+    }
+    #mic-badge.listening { color: #4ade80; border-color: rgba(74,222,128,0.3); background: rgba(74,222,128,0.05); }
+    #mic-badge.thinking  { color: var(--gold); border-color: var(--gold-dim); background: var(--gold-dim); }
+    #mic-badge.error     { color: #f87171; border-color: rgba(248,113,113,0.3); }
+    .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    #mic-badge.listening .badge-dot { animation: pulse 1s ease infinite; }
+    #target {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(40px, 9vw, 110px); color: var(--gold);
+      line-height: 1.1; padding: 40px clamp(20px, 5vw, 80px);
+      text-align: center; max-width: 95vw; transition: opacity 0.3s;
+    }
+    #target.fading { opacity: 0.3; }
+    #source {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      padding: 20px 40px 28px; text-align: center;
+      font-size: clamp(14px, 2vw, 18px); color: var(--muted);
+      font-style: italic; font-weight: 300;
+      background: linear-gradient(to top, rgba(8,8,8,0.95), transparent);
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(0.75); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="setup-screen">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      <span class="logo-text">District 87 Live Translate</span>
+    </div>
+    <h1>Speak.<br><span>Translate.</span><br>Connect.</h1>
+    <p class="subtitle">Real-time AI translation for District 87 school meetings.<br>Click below and allow microphone access to begin.</p>
+    <button id="start-btn">ENABLE MICROPHONE</button>
+  </div>
+
+  <div id="main-app">
+    <div class="top-bar">
+      <span class="bar-logo">District 87 Live Translate</span>
+      <div class="controls">
+        <select id="langChoice">
+          <option value="Spanish">Spanish</option>
+          <option value="Vietnamese">Vietnamese</option>
+          <option value="Arabic (Modern Standard)">Arabic</option>
+          <option value="French">French</option>
+          <option value="Portuguese">Portuguese</option>
+          <option value="Mandarin Chinese">Mandarin</option>
+          <option value="Somali">Somali</option>
+        </select>
+        <div id="mic-badge">
+          <span class="badge-dot"></span>
+          <span id="badge-label">IDLE</span>
+        </div>
+      </div>
+    </div>
+    <div id="target">Ready to Translate…</div>
+    <div id="source">Listening for speech…</div>
+  </div>
+
+  <script>
+    const GAS_URL = "https://script.google.com/a/macros/district87.org/s/AKfycby9jOKr_sFhc9AMOE4n4ks9RbDdsPWqYzqlndqMvZaeX0WFllwTS4JT4nVD536eGOlR5g/exec";
+
+    const startBtn    = document.getElementById('start-btn');
+    const setupScreen = document.getElementById('setup-screen');
+    const mainApp     = document.getElementById('main-app');
+    const targetDiv   = document.getElementById('target');
+    const sourceDiv   = document.getElementById('source');
+    const micBadge    = document.getElementById('mic-badge');
+    const badgeLabel  = document.getElementById('badge-label');
+
+    function setStatus(state, label) {
+      micBadge.className = state;
+      badgeLabel.textContent = (label || state).toUpperCase();
+    }
+
+    function blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    async function processChunk(blob) {
+      if (blob.size < 1000) return;
+      setStatus('thinking', 'thinking');
+      try {
+        const base64Audio = await blobToBase64(blob);
+        const lang = document.getElementById('langChoice').value;
+        const res = await fetch(GAS_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ audio: base64Audio, targetLang: lang })
+        });
+        const result = await res.json();
+        if (result.transcript) {
+          sourceDiv.textContent = result.transcript;
+          targetDiv.classList.add('fading');
+          setTimeout(() => {
+            targetDiv.textContent = result.translation || '—';
+            targetDiv.classList.remove('fading');
+          }, 200);
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        setStatus('error', 'error');
+        setTimeout(() => setStatus('listening', 'listening'), 3000);
+      }
+      setStatus('listening', 'listening');
+    }
+
+    startBtn.onclick = async () => {
+      startBtn.disabled = true;
+      startBtn.textContent = 'STARTING…';
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+        recorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) processChunk(e.data); };
+        recorder.start(5000);
+        setupScreen.style.display = 'none';
+        mainApp.style.display = 'flex';
+        setStatus('listening', 'listening');
+      } catch (err) {
+        startBtn.disabled = false;
+        startBtn.textContent = 'ENABLE MICROPHONE';
+        alert(err.name === 'NotAllowedError'
+          ? 'Microphone access was denied. Please allow it and try again.'
+          : 'Could not access microphone: ' + err.message);
+      }
+    };
+  </script>
+</body>
+</html>
